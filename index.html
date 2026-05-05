@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sufi Path to Allah (SWT)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Serif:italic,wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .serif {
+            font-family: 'Noto Serif', serif;
+        }
+
+        .step-number {
+            font-family: 'Noto Serif', serif;
+            font-style: italic;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid currentColor;
+            font-weight: 600;
+        }
+
+        /* Custom scrollbar for dark mode */
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+
+    <!-- Navigation Header -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('core')">
+                <div
+                    class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                    ع</div>
+                <h1 class="text-xl serif font-bold">The Spiritual Journey</h1>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <button onclick="switchTab('core')" id="btn-core"
+                        class="tab-active py-1 transition-colors hover:text-indigo-600">Core Path</button>
+                    <button onclick="switchTab('zikr')" id="btn-zikr"
+                        class="py-1 transition-colors hover:text-indigo-600">Zikr</button>
+                </nav>
+
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()"
+                    class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:ring-2 ring-indigo-500 transition-all">
+                    <svg id="sun-icon" class="w-5 h-5 hidden dark:block text-yellow-400" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z">
+                        </path>
+                    </svg>
+                    <svg id="moon-icon" class="w-5 h-5 block dark:hidden text-slate-700" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- Section 1: Core Path -->
+        <section id="section-core" class="space-y-8 animate-in fade-in duration-500">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-4xl serif mb-4 font-bold">Steps to the Divine</h2>
+                <p class="text-slate-500 dark:text-slate-400 italic">The comprehensive distilled map of Sufi literature.
+                </p>
+            </div>
+
+            <div id="core-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Data populated via JS -->
+            </div>
+        </section>
+
+        <section id="section-tawbah" class="hidden space-y-8 animate-in fade-in duration-500"></section>
+
+        <section id="section-ikhlāṣ" class="hidden space-y-8 animate-in fade-in duration-500"></section>
+
+        
+        <!-- Section 3: Zikr Deep Dive -->
+        <section id="section-zikr" class="hidden space-y-8 animate-in fade-in duration-500"></section>
+
+        <!-- Section 5: Khushu' Deep Dive -->
+        <section id="section-khushū‘" class="hidden space-y-8 animate-in fade-in duration-500"></section>
+
+    </main>
+
+    <footer class="mt-20 py-12 border-t border-slate-200 dark:border-slate-800 text-center">
+        <p class="text-slate-400 text-xs">Developed for constant remembrance. May your heart find peace.</p>
+    </footer>
+
+    <script type="module" src="scripts/main.js"></script>
+</body>
+
+</html>

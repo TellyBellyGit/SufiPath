@@ -1,0 +1,13 @@
+# Python virtual environment
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Git
+.git/
