@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadhili Path — One Sufi Path of Many to the Divine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Serif:italic,wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .serif {
+            font-family: 'Noto Serif', serif;
+        }
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fade-in 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-200">
+
+    <div id="root"></div>
+
+    <script>
+        /* Theme initialization — must run before React renders to avoid flash */
+        (function () {
+            const stored = localStorage.getItem('theme');
+            if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+
+        const { useState } = React;
+
+        /* ---- Inline SVG Icons (replacing lucide-react) ---- */
+        const IconHeart = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-rose-400">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            </svg>
+        );
+        const IconWind = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/>
+                <path d="M9.6 4.6A2 2 0 1 1 11 8H2"/>
+                <path d="M12.6 19.4A2 2 0 1 0 14 16H2"/>
+            </svg>
+        );
+        const IconAnchor = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                <circle cx="12" cy="5" r="3"/>
+                <line x1="12" y1="22" x2="12" y2="8"/>
+                <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+            </svg>
+        );
+        const IconSun = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+            </svg>
+        );
+        const IconCloud = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+            </svg>
+        );
+        const IconBookOpen = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500/50">
+                <path d="M12 7v14"/>
+                <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>
+            </svg>
+        );
+        const IconShield = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.06 1.06 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+            </svg>
+        );
+        const IconMoon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        );
+        const IconEye = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-400">
+                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+        );
+        const IconMap = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                <line x1="8" y1="2" x2="8" y2="18"/>
+                <line x1="16" y1="6" x2="16" y2="22"/>
+            </svg>
+        );
+        const IconChevronRight = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        );
+        const IconCheckCircle2 = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="m9 12 2 2 4-4"/>
+            </svg>
+        );
+        const IconAlertCircle = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500/80">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        );
+        const IconSparkles = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-pink-400">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+            </svg>
+        );
+
+        /* ---- Data ---- */
+        const hikamWisdoms = [
+            { text: "Your reaching out to Him is only because He first reached out to you.", category: "Tawhid" },
+            { text: "Nothing leads you like doubt, and nothing holds you back like the lack of certainty.", category: "Yaqin" },
+            { text: "A heart that is filled with the world cannot be filled with the Light of Allah.", category: "Ikhlas" },
+            { text: "When He gives, He shows you His Kindness; when He withholds, He shows you His Power.", category: "State" },
+            { text: "Do not fear the darkness of contraction; it is the time the soul is being emptied for a greater light.", category: "Qabd" },
+            { text: "He who is not grateful for the small is not grateful for the large.", category: "Shukr" },
+            { text: "The source of every disobedience, lustful desire, and heedlessness is satisfaction with the self.", category: "Nafs" },
+            { text: "Burial in the earth of obscurity is the best thing for the heart; nothing grows well unless it is first buried.", category: "Zuhd" }
+        ];
+
+        const stages = [
+            { id: 0, name: "Stage 0: Wakefulness", arabic: "al-Yaqaẓah", detail: "The initial realization of heedlessness. Developing a sincere, honest desire for Allah over 'experiences'." },
+            { id: 1, name: "Stage 1: Uprightness", arabic: "al-Istiqāmah", detail: "Reorganizing life around outward obedience. Prayers become non-negotiable and major sins are abandoned." },
+            { id: 2, name: "Stage 2: Settled Obedience", arabic: "Istiqrār al-Ṭāʿah", detail: "Struggle with the ego in basic duties decreases. Worship becomes habitual, stable, and effortless." },
+            { id: 3, name: "Stage 3: Inner Reorientation", arabic: "al-Inʿitāf al-Bāṭin", detail: "The heart loosens its grip on outcomes and timing. Trust shifts fundamentally from the self to Allah." },
+            { id: 4, name: "Stage 4: Living Presence", arabic: "al-Ḥuḍūr fī al-Jalwah", detail: "Integration. Remembrance (Dhikr) naturally accompanies worldly work, family life, and social duties." },
+            { id: 5, name: "Stage 5: Arrival", arabic: "al-Wuṣūl", detail: "Stability with Allah rather than ecstasy. Characterized by deep contentment and the annihilation of self-regard." }
+        ];
+
+        const stations = [
+            { name: "at-Tawba", arabic: "التوبة", meaning: "Repentance", color: "border-emerald-500/50", detail: "The honest turning and the true beginning of the path." },
+            { name: "at-Tawakkul", arabic: "التوكل", meaning: "Reliance", color: "border-blue-500/50", detail: "Trusting Divine management (Tadbīr) while still utilizing worldly means." },
+            { name: "al-Ikhlāṣ", arabic: "الإخلاص", meaning: "Sincerity", color: "border-cyan-500/50", detail: "Purifying motives until only the Divine remains in the heart\u2019s intent." },
+            { name: "ash-Shukr", arabic: "الشكر", meaning: "Gratitude", color: "border-amber-500/50", detail: "Maintaining thankfulness in both ease and hardship." },
+            { name: "aṣ-Ṣabr", arabic: "الصبر", meaning: "Patience", color: "border-rose-500/50", detail: "Steadiness, endurance, and stillness of heart without complaint." },
+            { name: "az-Zuhd", arabic: "الزهد", meaning: "Renunciation", color: "border-slate-500/50", detail: "Emptying the heart of what the hands possess to make room for Light." },
+            { name: "ar-Riḍā", arabic: "الرضا", meaning: "Contentment", color: "border-orange-500/50", detail: "Inner peace and total stillness before the flow of the Divine Decree." },
+            { name: "al-ʿUbūdiyyah", arabic: "العبودية", meaning: "Servitude", color: "border-purple-500/50", detail: "The realization of one\u2019s absolute status as a servant to the Lord." }
+        ];
+
+        const states = [
+            { name: "al-Qabḍ", arabic: "القبض", meaning: "Contraction", type: "Cleansing", icon: <IconCloud className="w-5 h-5 text-indigo-400" />, desc: "The heart tightening to purge ego-attachments. A time for refinement." },
+            { name: "al-Basṭ", arabic: "البسط", meaning: "Expansion", type: "Opening", icon: <IconSun className="w-5 h-5 text-yellow-400" />, desc: "The heart opening to receive the warmth and joy of Divine Presence." },
+            { name: "al-Hayba", arabic: "الهيبة", meaning: "Awe", type: "Majesty", icon: <IconWind className="w-5 h-5 text-slate-400" />, desc: "A state of majestic silence and stillness before Divine Grandeur." },
+            { name: "al-Uns", arabic: "الأنس", meaning: "Intimacy", type: "Friendship", icon: <IconHeart className="w-5 h-5 text-rose-400" />, desc: "The warmth, joy, and closeness of friendship with the Creator." },
+            { name: "al-Maḥabbah", arabic: "المحبة", meaning: "Love", type: "Anchor", icon: <IconSparkles className="w-5 h-5 text-pink-400" />, desc: "The ultimate aim where love for Allah becomes the heart\u2019s permanent anchor." },
+            { name: "al-Yaqīn", arabic: "اليقين", meaning: "Certitude", type: "Vision", icon: <IconEye className="w-5 h-5 text-cyan-400" />, desc: "Deep-seated spiritual certainty that accompanies true realization." },
+            { name: "al-Wajd", arabic: "الوجد", meaning: "Ecstasy", type: "Flash", icon: <IconSun className="w-5 h-5 text-amber-400" />, desc: "The sudden finding of the Divine presence within the heart." },
+            { name: "al-Fana\u2019", arabic: "الفناء", meaning: "Annihilation", type: "Deep", icon: <IconMoon className="w-5 h-5 text-purple-400" />, desc: "The passing away of self-regard in the witnessing of the One." }
+        ];
+
+        /* ---- Main App Component ---- */
+        function App() {
+            const [activeTab, setActiveTab] = useState('stages');
+            const [randomHikam, setRandomHikam] = useState(hikamWisdoms[0]);
+
+            const refreshHikam = () => {
+                const others = hikamWisdoms.filter(h => h.text !== randomHikam.text);
+                setRandomHikam(others[Math.floor(Math.random() * others.length)]);
+            };
+
+            const toggleDarkMode = () => {
+                const html = document.documentElement;
+                const isDark = html.classList.toggle('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-200 font-sans p-4 md:p-8 flex flex-col items-center">
+
+                    {/* Navigation Header */}
+                    <header className="w-full max-w-5xl bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 mb-10">
+                        <div className="px-4 py-4 flex justify-between items-center">
+                            <a href="index.html" className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">ع</div>
+                                <h1 className="text-xl serif font-bold text-slate-900 dark:text-slate-100">The Spiritual Journey</h1>
+                            </a>
+
+                            <div className="flex items-center space-x-6">
+                                <a href="index.html" className="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-colors">
+                                    &larr; Back to Core Path
+                                </a>
+                                <button onClick={toggleDarkMode}
+                                    className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:ring-2 ring-indigo-500 transition-all">
+                                    <svg id="sun-icon" className="w-5 h-5 hidden dark:block text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
+                                    </svg>
+                                    <svg id="moon-icon" className="w-5 h-5 block dark:hidden text-slate-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* 1. Sub-header */}
+                    <header className="w-full max-w-3xl text-center mb-10 mt-6">
+                        <h1 className="text-3xl font-light tracking-[0.2em] uppercase text-slate-800 dark:text-white/90">Shadhilī Canvas</h1>
+                        <p className="text-slate-400 dark:text-slate-500 text-xs mt-2 uppercase tracking-widest italic">The Diagnostic Map of Sulūk</p>
+                    </header>
+
+                    {/* 2. Central Hikam (The Anchor) */}
+                    <div className="w-full max-w-3xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-3xl p-8 mb-8 relative overflow-hidden text-center shadow-lg dark:shadow-2xl">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+                        <IconBookOpen />
+                        <p className="text-xl md:text-2xl font-serif italic leading-relaxed text-slate-800 dark:text-white min-h-[80px] flex items-center justify-center px-4 mt-4">
+                            &ldquo;{randomHikam.text}&rdquo;
+                        </p>
+                        <p className="mt-4 text-[10px] uppercase tracking-[0.3em] text-amber-600/60 dark:text-amber-500/40">&mdash; Ibn &lsquo;Atā&rsquo; Allāh al-Iskandarī</p>
+                        <button
+                            onClick={refreshHikam}
+                            className="mt-8 px-6 py-2 border border-slate-200 dark:border-white/10 rounded-full text-[10px] uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-slate-500 dark:text-slate-400 active:scale-95"
+                        >
+                            Refresh Wisdom
+                        </button>
+                    </div>
+
+                    {/* 3. Navigation Toggle */}
+                    <div className="w-full max-w-3xl flex flex-col gap-6">
+
+                        <div className="flex bg-white dark:bg-slate-900/80 p-1 rounded-full border border-slate-200 dark:border-white/5">
+                            <button
+                                onClick={() => setActiveTab('stages')}
+                                className={`flex-1 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'stages' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 shadow-inner' : 'text-slate-500'}`}
+                            >
+                                Stages (Map)
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('stations')}
+                                className={`flex-1 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'stations' ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 shadow-inner' : 'text-slate-500'}`}
+                            >
+                                Maqāmāt (Stable)
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('states')}
+                                className={`flex-1 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'states' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shadow-inner' : 'text-slate-500'}`}
+                            >
+                                Aḥwāl (Fleeting)
+                            </button>
+                        </div>
+
+                        <div className="min-h-[400px] w-full mb-8">
+                            {activeTab === 'stages' && (
+                                <div className="space-y-4 animate-in">
+                                    <div className="grid grid-cols-1 gap-3">
+                                        {stages.map((stg) => (
+                                            <div key={stg.id} className="p-4 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 rounded-2xl flex items-center gap-4 group hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all">
+                                                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-500 font-bold border border-amber-500/10">
+                                                    {stg.id}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between items-center">
+                                                        <h3 className="text-sm font-bold text-slate-800 dark:text-white tracking-wide">{stg.name}</h3>
+                                                        <span className="text-[10px] text-amber-600/60 dark:text-amber-500/50 font-serif">{stg.arabic}</span>
+                                                    </div>
+                                                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-1">{stg.detail}</p>
+                                                </div>
+                                                <IconChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-700 group-hover:text-amber-500 transition-colors" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'stations' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in">
+                                    {stations.map((s) => (
+                                        <div key={s.name} className={`p-5 bg-white dark:bg-slate-900/40 border-l-4 ${s.color} rounded-r-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-900/60 group`}>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <h3 className="font-bold text-slate-800 dark:text-white tracking-wide group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors">{s.name}</h3>
+                                                <span className="text-xs text-emerald-600/50 dark:text-emerald-500/50 font-serif">{s.arabic}</span>
+                                            </div>
+                                            <p className="text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{s.meaning}</p>
+                                            <p className="text-xs text-slate-500 dark:text-slate-300/80 leading-relaxed italic">{s.detail}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {activeTab === 'states' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in">
+                                    {states.map((st) => (
+                                        <div key={st.name} className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 rounded-2xl transition-all hover:bg-slate-50 dark:hover:bg-slate-900/60 flex gap-4 group">
+                                            <div className="flex-shrink-0 mt-1 transition-transform group-hover:scale-110 duration-300">{st.icon}</div>
+                                            <div>
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <h3 className="font-bold text-slate-800 dark:text-white tracking-wide group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">{st.name}</h3>
+                                                    <span className="text-[10px] text-blue-500/40 dark:text-blue-400/40 font-serif">{st.arabic}</span>
+                                                </div>
+                                                <p className="text-[9px] uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">{st.type}</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-300/80 leading-relaxed italic">{st.desc}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 4. Important Distinctions Footer Block */}
+                        <div className="w-full bg-white dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200 dark:border-white/5 space-y-6 shadow-sm">
+                            <div className="flex items-center gap-3 text-amber-600 dark:text-amber-500/80">
+                                <IconAlertCircle />
+                                <h3 className="text-xs uppercase tracking-[0.2em] font-bold">Important Distinctions</h3>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                                <div className="space-y-2">
+                                    <p className="text-slate-800 dark:text-white font-bold uppercase tracking-widest text-[10px]">Maqām vs Ḥāl</p>
+                                    <p>
+                                        A <span className="text-emerald-600 dark:text-emerald-400">Station (Maqām)</span> is a stable spiritual stage. A <span className="text-blue-600 dark:text-blue-400">State (Ḥāl)</span> is a temporary spiritual experience. The path is built on cultivating stable virtues, not chasing fleeting flashes.
+                                    </p>
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-slate-800 dark:text-white font-bold uppercase tracking-widest text-[10px]">The Goal: Sobriety</p>
+                                    <p>
+                                        Progress is judged by <span className="text-amber-600 dark:text-amber-400">character, sobriety, and the softening of the heart</span>. Beginners should avoid seeking metaphysical visions, which often feed ego-inflation.
+                                    </p>
+                                </div>
+                                <div className="md:col-span-2 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5 italic text-center text-slate-600 dark:text-slate-400">
+                                    &ldquo;Stability itself is a station. Wanting rapid progress is often a sign of following the ego.&rdquo;
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 5. Final Footer */}
+                    <footer className="mt-12 opacity-30 text-[9px] tracking-[0.4em] uppercase text-center max-w-sm border-t border-slate-200 dark:border-white/10 pt-6 mb-8 text-slate-400">
+                        Adab is the fragrance of the realization.
+                    </footer>
+                </div>
+            );
+        }
+
+        /* ---- Mount ---- */
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>

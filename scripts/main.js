@@ -40,6 +40,10 @@ function renderDeepDiveSections() {
 }
 
 function handleStepClick(id) {
+    if (id === "shadhili") {
+        window.location.href = "shadhhiliPath.html";
+        return;
+    }
     if (deepDiveTabs.includes(id)) {
         switchTab(id);
     } else {

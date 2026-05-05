@@ -17,7 +17,8 @@ export const coreSteps = [
     { id: "khidmah", t: "Service", a: "Khidmah", d: "Serving creation as an act of worship." },
     { id: "muḥāsabah", t: "Self-Accounting", a: "Muḥāsabah", d: "Performing a daily inner audit of the heart." },
     { id: "fanā'", t: "Annihilation", a: "Fanā'", d: "Annihilation of ego to find subsistence (Baqā') in Allah." },
-    { id: "istiqāmah", t: "Consistency", a: "Istiqāmah", d: "Small, virtuous deeds done continuously." }
+    { id: "istiqāmah", t: "Consistency", a: "Istiqāmah", d: "Small, virtuous deeds done continuously." },
+    { id: "shadhili", t: "Shadhili Path", a: "Shādhiliyyah", d: "One Sufi Path of Many to the Divine." }
 ];
 
 export function initCoreGrid(onStepClick) {
