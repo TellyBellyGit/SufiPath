@@ -57,6 +57,12 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="scripts/deepdives/stage0.js"></script>
+    <script src="scripts/deepdives/stage1.js"></script>
+    <script src="scripts/deepdives/stage2.js"></script>
+    <script src="scripts/deepdives/stage3.js"></script>
+    <script src="scripts/deepdives/stage4.js"></script>
+    <script src="scripts/deepdives/stage5.js"></script>
 
     <script type="text/babel">
 
@@ -192,6 +198,7 @@
         /* ---- Main App Component ---- */
         function App() {
             const [activeTab, setActiveTab] = useState('stages');
+            const [selectedStage, setSelectedStage] = useState(null);
             const [randomHikam, setRandomHikam] = useState(hikamWisdoms[0]);
 
             const refreshHikam = () => {
@@ -280,11 +287,11 @@
                         </div>
 
                         <div className="min-h-[400px] w-full mb-8">
-                            {activeTab === 'stages' && (
+                            {activeTab === 'stages' && selectedStage === null && (
                                 <div className="space-y-4 animate-in">
                                     <div className="grid grid-cols-1 gap-3">
                                         {stages.map((stg) => (
-                                            <div key={stg.id} className="p-4 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 rounded-2xl flex items-center gap-4 group hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all">
+                                            <div key={stg.id} onClick={() => setSelectedStage(stg.id)} className="p-4 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 rounded-2xl flex items-center gap-4 group hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all cursor-pointer">
                                                 <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-500 font-bold border border-amber-500/10">
                                                     {stg.id}
                                                 </div>
@@ -299,6 +306,23 @@
                                             </div>
                                         ))}
                                     </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'stages' && selectedStage !== null && (
+                                <div className="animate-in">
+                                    <button
+                                        onClick={() => setSelectedStage(null)}
+                                        className="text-sm font-medium text-amber-600 dark:text-amber-400 flex items-center mb-6 group hover:text-amber-800 dark:hover:text-amber-300 transition-colors"
+                                    >
+                                        <span className="mr-2 transition-transform group-hover:-translate-x-1">&larr;</span> Back to All Stages
+                                    </button>
+                                    {selectedStage === 0 && <div dangerouslySetInnerHTML={{ __html: renderStage0() }} />}
+                                    {selectedStage === 1 && <div dangerouslySetInnerHTML={{ __html: renderStage1() }} />}
+                                    {selectedStage === 2 && <div dangerouslySetInnerHTML={{ __html: renderStage2() }} />}
+                                    {selectedStage === 3 && <div dangerouslySetInnerHTML={{ __html: renderStage3() }} />}
+                                    {selectedStage === 4 && <div dangerouslySetInnerHTML={{ __html: renderStage4() }} />}
+                                    {selectedStage === 5 && <div dangerouslySetInnerHTML={{ __html: renderStage5() }} />}
                                 </div>
                             )}
 
@@ -336,31 +360,67 @@
                             )}
                         </div>
 
-                        {/* 4. Important Distinctions Footer Block */}
-                        <div className="w-full bg-white dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200 dark:border-white/5 space-y-6 shadow-sm">
-                            <div className="flex items-center gap-3 text-amber-600 dark:text-amber-500/80">
-                                <IconAlertCircle />
-                                <h3 className="text-xs uppercase tracking-[0.2em] font-bold">Important Distinctions</h3>
-                            </div>
+                        {/* 4. Footer Block — content changes based on active tab */}
+                        {activeTab === 'stages' && (
+                            <div className="w-full bg-white dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200 dark:border-white/5 space-y-6 shadow-sm">
+                                <div className="flex items-center gap-3 text-rose-600 dark:text-rose-500/80">
+                                    <IconAlertCircle />
+                                    <h3 className="text-xs uppercase tracking-[0.2em] font-bold">Diagnostic Warnings & "Red Flags"</h3>
+                                </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                                <div className="space-y-2">
-                                    <p className="text-slate-800 dark:text-white font-bold uppercase tracking-widest text-[10px]">Maqām vs Ḥāl</p>
-                                    <p>
-                                        A <span className="text-emerald-600 dark:text-emerald-400">Station (Maqām)</span> is a stable spiritual stage. A <span className="text-blue-600 dark:text-blue-400">State (Ḥāl)</span> is a temporary spiritual experience. The path is built on cultivating stable virtues, not chasing fleeting flashes.
+                                <div className="space-y-4 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                                    <p className="text-slate-600 dark:text-slate-300">
+                                        The Shādhilī masters provide strict warnings regarding character. A seeker is advised <span className="text-rose-600 dark:text-rose-400 font-semibold">not to consider themselves ready to advance</span> if they notice:
                                     </p>
-                                </div>
-                                <div className="space-y-2">
-                                    <p className="text-slate-800 dark:text-white font-bold uppercase tracking-widest text-[10px]">The Goal: Sobriety</p>
-                                    <p>
-                                        Progress is judged by <span className="text-amber-600 dark:text-amber-400">character, sobriety, and the softening of the heart</span>. Beginners should avoid seeking metaphysical visions, which often feed ego-inflation.
-                                    </p>
-                                </div>
-                                <div className="md:col-span-2 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5 italic text-center text-slate-600 dark:text-slate-400">
-                                    &ldquo;Stability itself is a station. Wanting rapid progress is often a sign of following the ego.&rdquo;
+
+                                    <ul className="space-y-3 pl-2">
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-rose-500 mt-1 flex-shrink-0">&#9679;</span>
+                                            <span>An increase in <span className="text-rose-600 dark:text-rose-400 font-semibold">irritability, pride, or harshness</span> alongside increased worship.</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-rose-500 mt-1 flex-shrink-0">&#9679;</span>
+                                            <span><span className="text-rose-600 dark:text-rose-400 font-semibold">Inwardly criticizing others' religiosity</span> or excusing bad character as part of a "spiritual struggle."</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-rose-500 mt-1 flex-shrink-0">&#9679;</span>
+                                            <span>Feeling <span className="text-rose-600 dark:text-rose-400 font-semibold">disappointment when others do not recognize</span> their spiritual efforts.</span>
+                                        </li>
+                                    </ul>
+
+                                    <div className="p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200/50 dark:border-rose-800/50 rounded-xl text-center text-rose-700 dark:text-rose-400 italic">
+                                        In this tradition, <span className="font-semibold">character is a condition of acceptance</span>, and a simple deed performed with sincerity and good character outweighs abundant but distracted actions.
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
+
+                        {activeTab !== 'stages' && (
+                            <div className="w-full bg-white dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200 dark:border-white/5 space-y-6 shadow-sm">
+                                <div className="flex items-center gap-3 text-amber-600 dark:text-amber-500/80">
+                                    <IconAlertCircle />
+                                    <h3 className="text-xs uppercase tracking-[0.2em] font-bold">Important Distinctions</h3>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                                    <div className="space-y-2">
+                                        <p className="text-slate-800 dark:text-white font-bold uppercase tracking-widest text-[10px]">Maqām vs Ḥāl</p>
+                                        <p>
+                                            A <span className="text-emerald-600 dark:text-emerald-400">Station (Maqām)</span> is a stable spiritual stage. A <span className="text-blue-600 dark:text-blue-400">State (Ḥāl)</span> is a temporary spiritual experience. The path is built on cultivating stable virtues, not chasing fleeting flashes.
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-slate-800 dark:text-white font-bold uppercase tracking-widest text-[10px]">The Goal: Sobriety</p>
+                                        <p>
+                                            Progress is judged by <span className="text-amber-600 dark:text-amber-400">character, sobriety, and the softening of the heart</span>. Beginners should avoid seeking metaphysical visions, which often feed ego-inflation.
+                                        </p>
+                                    </div>
+                                    <div className="md:col-span-2 p-3 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5 italic text-center text-slate-600 dark:text-slate-400">
+                                        &ldquo;Stability itself is a station. Wanting rapid progress is often a sign of following the ego.&rdquo;
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* 5. Final Footer */}
